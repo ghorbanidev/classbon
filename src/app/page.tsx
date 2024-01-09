@@ -1,113 +1,158 @@
-import Image from 'next/image'
+import { CourseSummary } from "@/types/course-summary.interface";
+import { HomeHeroSection } from "./_components/home-hero-section/home-hero-section";
+import { CourseCardList } from "./(courses)/_components/course-card-list";
+import { homeFeatures } from "@/data/home-features";
+import Feature from "./_components/feature/feature";
+import { Button } from "./_components/button";
+import { IconArrowLeftFill } from "./_components/icons/icons";
+import { BlogPostSummary } from "@/types/blog-post-summary.interface";
+import { BlogPostCardList } from "./(blog)/_components/blog-post-card-list";
+import { API_URL } from "@/configs/global";
+import { Suspense } from "react";
+import { CardPlaceholder } from "./_components/placeholders";
+import { TestimonialList } from "./_components/testimonial/testimonial-list";
+import { testimonials } from "@/data/testimonials";
 
-export default function Home() {
+
+// export const dynamic = "force-dynamic"
+
+// async function getNewestCourses(count: number): Promise<CourseSummary[]> {
+
+//   await new Promise((resolve) => setTimeout(resolve, 5000))
+
+//   const res = await fetch(`${API_URL}/courses/newest/${count}`, {
+//     cache: "no-store",
+//     next: {
+//       revalidate: 24 * 60 * 60,
+//       // revalidate: 0,
+//     }
+//   })
+//   return res.json()
+// }
+
+async function getNewestPosts(count: number): Promise<BlogPostSummary[]> {
+  const res = await fetch(`${API_URL}/blog/newest/${count}`, {
+    next: {
+      revalidate: 24 * 60 * 60
+    }
+  })
+  return res.json()
+}
+
+export default async function Home() {
+  // const newestCourses = await getNewestCourses(4)
+  // const newestCoursesData = getNewestCourses(4)
+  const newestBlogPostsData = getNewestPosts(4)
+
+  const [
+    // newestCourses,
+    newestBlogPosts
+  ] = await Promise.all([
+    // newestCoursesData,
+    newestBlogPostsData
+  ])
+  // console.log(newestBlogPosts);
+
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <>
+      <HomeHeroSection />
+      <section className="dark:bg-base-75 mt-10">
+        <div className="container py-10 flex flex-col lg:flex-row gap-10 xl:gap-5">
+          {
+            homeFeatures.map((feature) => (
+              <Feature key={`feature-${feature.title}`} feature={feature} />
+            ))
+          }
         </div>
+      </section>
+      <section className="container pt-20">
+        <div className="text-center xl:text-right">
+          <h2 className="text-2xl font-extrabold">تازه ترین دوره های آموزشی</h2>
+          <p>برای به روز موندن ، یاد گرفتن نکته های تازه ضروریه!</p>
+        </div>
+        {/* <CourseCardList courses={newestCourses} /> */}
+
+        <Suspense fallback={<CardPlaceholder count={4} className="mt-5" />}>
+          <CourseCardList courses={[]} />
+        </Suspense>
+
+      </section>
+
+      <section className="px-2 my-40">
+        {/* <div className="sticky top-0 pt-0 text-center"> */}
+        <div className="relative pt-0 text-center">
+          <div className="bg-primary pointer-events-none absolute left-1/2 aspect-square w-1/2 -translate-x-1/2 -top-96 rounded-full opacity-10 blur-3xl"></div>
+          <h2
+            lang="en"
+            className="gradient leading-[1.3] relative z-10 mx-auto inline-block text-[clamp(2rem,6vw,5.5rem)] font-black"
+          >
+            ReactJs & Next.js
+          </h2>
+          <p className="text-base-content/70  relative z-[2] py-4 m-auto md:text-3xl max-w-5xl font-light !leading-[1.7]">
+            ری‌اکت و نکست‌جی‌اس برترین کتابخونه‌های فرانت‌اند و
+            یکه‌تاز دنیای وب! پیشرفته‌ترین مباحث رو اینجا می تونی
+            پیدا کنی. پس همین الان یادگیری رو شروع کن ما هم از
+            ابتدای مسیر با آموزش‌های تخصصی و کاملاً کاربردی کنارت
+            هستیم.
+          </p>
+          <div className="flex flex-col lg:flex-row items-center gap-3 justify-center">
+            <Button
+              variant="primary"
+              size="large"
+              className="mt-7"
+              animatedIcon={true}
+            >
+              دوره‌های ری اکت و نکست‌ جی‌اس
+              <IconArrowLeftFill fill="currentColor" />
+            </Button>
+            <Button
+              variant="neutral"
+              size="large"
+              className="mt-7"
+              animatedIcon={true}
+            >
+              مقالات ری اکت و نکست‌ جی‌اس
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      <section className="container py-20">
+        <div className="flex flex-col xl:flex-row gap-4 justify-center xl:justify-between items-center">
+          <div className="text-center xl:text-right">
+            <h2 className="text-2xl font-extrabold">
+              تازه‌ترین مقاله‌های آموزشی
+            </h2>
+            <p className="mt-3 text-lg">
+              به رایگان، به‌روزترین مقاله‌های دنیای تکنولوژی رو در
+              اختیارت می‌ذاریم؛ چون پیشرفتت برامون مهمه!
+            </p>
+          </div>
+          <Button
+            variant="neutral"
+            className="font-semibold"
+            animatedIcon={true}
+          >
+            همه مقاله‌ها
+            <IconArrowLeftFill fill="currentColor" />
+          </Button>
+        </div>
+        <BlogPostCardList posts={newestBlogPosts} />
+      </section>
+
+      <div className="relative mt-32">
+        <div className="bg-primary pointer-events-none absolute bottom-0 left-1/2 aspect-square w-1/2 -translate-x-1/2 rounded-full opacity-5 -top-52 blur-3xl"></div>
+        <h2 className="text-info relative z-0 mx-auto text-3xl font-extrabold block w-fit">
+          <span className="-z-10 w-8 h-8 absolute bg-info opacity-25 -top-2 rounded-full inline-block -right-3"></span>
+          تجربه هم‌ مسیرهای کلاسبن
+        </h2>
+        <p className=" mb-32 text-lg text-center mt-2">
+          تو اینجا تنها نیستی. ببین هم‌ مسیرهات نظرشون در مورد دوره‌های کلاسبن
+          چیه
+        </p>
+        <TestimonialList testimonials={testimonials} />
       </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore the Next.js 13 playground.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    </>
   )
 }
