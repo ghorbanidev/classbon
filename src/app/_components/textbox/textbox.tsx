@@ -10,6 +10,7 @@ const sizeClasses: Record<Size, string> = {
     large: "textbox-lg",
 };
 
+// eslint-disable-next-line react/display-name
 export const Textbox: React.FC<TextboxProps> = forwardRef<HTMLInputElement, TextboxProps>(({
     variant = "ghost",
     type = "text",
