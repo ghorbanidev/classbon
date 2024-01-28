@@ -137,6 +137,12 @@ const useVideo = (src: string) => {
 
     const play = () => videoRef.current!.play();
     const pause = () => videoRef.current!.pause();
+    const stop = () => {
+        const video = videoRef.current!;
+        pause()
+        video.currentTime = 0;
+    }
+    const seek = (time: number) => (videoRef.current!.currentTime = time)
     const fullScreen = () => videoRef.current!.requestFullscreen();
 
     return {
@@ -144,6 +150,8 @@ const useVideo = (src: string) => {
         ...state,
         play,
         pause,
+        stop,
+        seek,
         fullScreen,
     };
 };

@@ -18,8 +18,20 @@ export const VideoPlayer: React.FC<VideoProps> = ({ src, poster = "" }) => {
         videoRef,
         play,
         pause,
+        stop,
+        seek,
         fullScreen,
     } = useVideo(src);
+
+    const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        const progressBar = e.currentTarget;
+        const clickPosition = e.clientX - progressBar.getBoundingClientRect().left;
+        const progressBarWidth = progressBar.clientWidth;
+        const percentage = (clickPosition / progressBarWidth) * 100;
+        const seekTime = (percentage / 100) * duration;
+
+        seek(seekTime);
+    };
 
     return (
         <div className="relative">
@@ -34,8 +46,8 @@ export const VideoPlayer: React.FC<VideoProps> = ({ src, poster = "" }) => {
             />
             <div
                 className={`${!isVideoLoaded || isVideoWaited
-                        ? "animate-pulse opacity-40 pointer-events-none"
-                        : ""
+                    ? "animate-pulse opacity-40 pointer-events-none"
+                    : ""
                     } h-12 dark:bg-base-50 rounded-lg  p-2 flex items-center mt-2 gap-5`}
                 lang="en"
                 dir="ltr"
@@ -61,7 +73,21 @@ export const VideoPlayer: React.FC<VideoProps> = ({ src, poster = "" }) => {
                             : "pause"}
                 </Button>
 
-                <Progress value={progress} variant="primary" />
+                <Button
+                    size="tiny"
+                    variant={"error"}
+                    className="font-semibold tracking-widest w-32"
+                    onClick={stop}
+                >
+                    Stop
+                    {/* {isVideoWaited
+                        ? "loading..."
+                        : !isPlaying
+                            ? "play"
+                            : "pause"} */}
+                </Button>
+
+                <Progress value={progress} variant="primary" onClick={handleProgressClick} />
                 <div className="flex gap-1 font-semibold text-sm *:w-16">
                     <span>{secondsToHHMMSS(currentTime)}</span> /
                     <span>{secondsToHHMMSS(duration)}</span>
