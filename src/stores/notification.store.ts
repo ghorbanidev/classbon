@@ -29,3 +29,9 @@ export const useNotificationStore = create<NotificationState>()(devtools(
         }
     })
 ))
+
+export const showNotification = (notifications: Omit<Notification, "id">[]) => {
+    notifications.forEach(p =>
+        useNotificationStore.getState().showNotification(p)
+    )
+}

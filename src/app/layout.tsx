@@ -4,6 +4,7 @@ import { Header } from "./_components/header";
 import "./globals.css";
 import { Figtree, Vazirmatn } from "next/font/google"
 import NextTopLodaer from "nextjs-toploader"
+import { Notifications } from './_components/notification/notifications';
 
 const figtree = Figtree({
   display: "swap",
@@ -70,6 +71,7 @@ export default function RootLayout({
     <html dir="rtl" className={`dark ${figtree.variable} ${Vazir.variable}`}>
       <body className="min-h-screen grid grid-rows-[80px_1fr_auto] dark:bg-base-100 dark:text-base-content">
         <NextTopLodaer showSpinner={false} color="var(--color-prima)" />
+        <Notifications />
         <QueryProvider>
           <Header />
           <main>
