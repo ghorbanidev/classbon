@@ -1,9 +1,5 @@
-import Link from 'next/link';
+import VerificationForm from './_components/verification-form';
 
 export default async function Verify() {
-    return (
-        <div>
-            <Link href="/signin">Go To SignIn Page</Link>
-        </div>
-    )
+    return <VerificationForm />
 }
